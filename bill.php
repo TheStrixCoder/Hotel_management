@@ -11,8 +11,9 @@
   <?php
     include "connection.php";
     $type=$_SESSION['type'];
+    $hotel_id=$_SESSION['hotel_id'];
 
-    $qq=mysqli_query($con,"select `inrsin` from tariff where `type`='$type'");
+    $qq=mysqli_query($con,"select `inrsin` from tariff where `type`='$type' and `hotel_id`=$hotel_id");
 
     while($res = mysqli_fetch_assoc($qq)){
       $_SESSION['price'] = $res['inrsin'];
@@ -26,11 +27,11 @@
 
 
   <div id = "heading">
-
+    <h2>Hotel Name : <?php echo $_SESSION['hotel_name']; ?> </h2>  
     <h2>Type of Rooms : <?php echo $_SESSION['type']; ?> </h2>
     <h2>Cost per Room : <?php echo $_SESSION['price']; ?> </h2>
     <h2>Number of Rooms : <?php echo $_SESSION['norm']; ?> </h2>
-    <h2>Number of Days : <?php echo $_SESSION['datediff']; ?> </h2>
+    <h2>Number of Days : <?php echo floor($_SESSION['datediff']); ?> </h2>
     <br><br>
     <h2>Thank you for coming, <strong><?php echo $_SESSION['username']?></strong></h2>
     <h2>Following rooms have been booked.Have a nice day :)</h2>

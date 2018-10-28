@@ -8,6 +8,7 @@
 	 $cid=$_POST["cid"];
 	 $cod=$_POST["cod"];
 	 $norm=$_POST["txtroom"];
+     $hotel=$_POST["txthotel"];
 	 $type=$_POST["txttype"];
 	 $spreq=$_POST["txtspanyreq"];
 	include "connection.php";
@@ -42,13 +43,16 @@
  while ($row = mysqli_fetch_assoc($new)) {
   		$b_rooms= $row['booked_rooms'];
  }
-
-	$totalrooms_query="SELECT totroom FROM `tariff` where `type`='$type'";
+    $hotel_query="select hotel_id from hotel where hotel_name='$hotel'";
+    $hotel_query_q=mysqli_query($con,$hotel_query);
+    $temp=mysqli_fetch_array($hotel_query_q);
+	
+    $totalrooms_query="SELECT totroom FROM `tariff` where `type`='$type' and hotel_id=$temp[0]";
 	$totalrooms_query_q=mysqli_query($con,$totalrooms_query);
 	$t_rooms=0;
 	while ($row = mysqli_fetch_assoc($totalrooms_query_q)) {
   		$t_rooms= $row['totroom'];
- }
+    }
 
  	$a_rooms=$t_rooms-$b_rooms;
 
@@ -61,12 +65,12 @@
  	else
  	{
  	$qins=mysqli_query ($con,"INSERT INTO `reservation`
-	(`r_id`,`r_chkindt`,`r_chkoutdt`,`r_rooms`,`r_type`,`r_spanyreq`)VALUES
-	('$id1','$cid','$cod','$norm','$type','$spreq');");
+	(`r_id`,`r_chkindt`,`r_chkoutdt`,`r_rooms`,`r_type`,`r_spanyreq`,`hotel_id`)VALUES
+	('$id1','$cid','$cod','$norm','$type','$spreq','$temp[0]');");
 
 		if($qins)
 		{
-				 $app="update tariff set avroom=avroom-$norm where type='$type'";
+				 $app="update tariff set avroom=avroom-$norm where type='$type' and hotel_id=$temp[0]";
 				 mysqli_query($con,$app);
 
 		}
@@ -74,8 +78,8 @@
 		$username = $_SESSION['username'];
 
 		mysqli_query ($con,"INSERT INTO `maprt`
-		(`r_id`,`type`)VALUES
-		('$id1','$type');");
+		(`r_id`,`type`,`hotel_id`)VALUES
+		('$id1','$type','$temp[0]');");
 
 		$_SESSION['rid']=$id1;
 
@@ -83,7 +87,7 @@
 		(`Userid`,`r_id`)VALUES
 		('$username','$id1');");
 
-		$qq=mysqli_query($con,"select max(room_number) as 'maxrn' from room");
+		$qq=mysqli_query($con,"select max(room_number) as 'maxrn' from room where hotel_id=$temp[0] and type='$type'");
 
 		while($res = mysqli_fetch_assoc($qq)){
 			$roomno = $res['maxrn'];
@@ -94,12 +98,17 @@
 			$roomno = $roomno +1;
 
 			mysqli_query ($con,"INSERT INTO `maprr`
-			(`r_id`,`room_number`)VALUES
-			('$id1','$roomno');");
+			(`r_id`,`room_number`,`hotel_id`)VALUES
+			('$id1','$roomno','$temp[0]');");
 
-			mysqli_query ($con,"INSERT INTO `room`
-			(`room_number`,`r_id`,`type`,`CheckIn Date`,`CheckOut Date`)VALUES
-			('$roomno','$id1','$type','$cid','$cod');");
+			$r=mysqli_query ($con,"INSERT INTO `room`
+			(`room_number`,`r_id`,`type`,`CheckIn Date`,`CheckOut Date`,`hotel_id`)VALUES
+			('$roomno','$id1','$type','$cid','$cod','$temp[0]');");
+            
+            if (!$r) {
+            printf("Error: %s\n", mysqli_error($con));
+            exit();
+            }
 
 		}
 
@@ -107,6 +116,8 @@
 
 	$_SESSION['norm']=$norm;
 	$_SESSION['type']=$type;
+    $_SESSION['hotel_name']=$hotel;
+    $_SESSION['hotel_id']=$temp[0];
 
 	echo "<script type='text/javascript'>alert('$message');</script>";
 

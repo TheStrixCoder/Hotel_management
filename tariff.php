@@ -27,13 +27,22 @@
 	echo "<center>";
 	echo "<table class=table>";
 	echo "<caption><font color='rgba(0,0,0,0.7)' size=4><b><i>Room Tariff</i></b></font></caption>";
-	echo "<tr><th>ROOM</th><th colspan=2>INR</th><th colspan=2>USD</th><th>TOTAL</th></tr>";
-	echo "<tr><th>TYPE</th><th>SINGLE</th><th>DOUBLE</th><th>SINGLE</th><th>DOUBLE</th><th>ROOM</th></tr>";
+	echo "<tr><th>ROOM</th><th>HOTEL</th><th colspan=2>INR</th><th colspan=2>USD</th><th>TOTAL</th></tr>";
+	echo "<tr><th>TYPE</th><th>NAME</th><th>SINGLE</th><th>DOUBLE</th><th>SINGLE</th><th>DOUBLE</th><th>ROOM</th></tr>";
 
 	while($v=mysqli_fetch_array($rs))
 	{
 		echo "<tr>";
-		echo "<td>".$v['type']."</td>";
+		echo "<td>".$v[0]."</td>";
+        $qry="select hotel_name from hotel where hotel_id=$v[6]";
+        
+        $r=mysqli_query($con,$qry);
+        if (!$r) {
+            printf("Error: %s\n", mysqli_error($con));
+            exit();
+        }
+        $temp=mysqli_fetch_array($r);
+        echo "<td>".$temp[0]."</td>";
 		echo "<td>".$v[1]."</td>";
 		echo "<td>".$v[2]."</td>";
 		echo "<td>".$v[3]."</td>";
