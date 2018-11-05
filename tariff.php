@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <html>
 <head>
 	<title>Accomodation</title>
@@ -13,12 +16,22 @@
 <div id = "heading">
 	<h1>Tariff And Policies</h1>
 </div>
+<form action="tariff.php" method="post" class="container"> 
+Search: <input type="text" name="term" placeholder="Enter hotel name.." size=50/> 
+<input type="submit" value="Submit" class="btn btn-success"/> 
+</form>
 
 <?php
 	include "connection.php";
-	$qrysel="select * from tariff";
-	$rs=mysqli_query($con,$qrysel);
-
+	$term="";
+	if(isset($_POST['term'])){
+        $term = $_POST['term'];
+    }
+    if($term=="")
+        $qrysel="select * from tariff";
+    else
+        $qrysel="select * from tariff where hotel_id like (select hotel_id from hotel where hotel_name like '%".$term."%')";
+    $rs=mysqli_query($con,$qrysel);
 	if(!$rs)
 	{
 		echo "<font color=purple size=4>In correct mysql select Query.</font>";
@@ -27,8 +40,8 @@
 	echo "<center>";
 	echo "<table class=table>";
 	echo "<caption><font color='rgba(0,0,0,0.7)' size=4><b><i>Room Tariff</i></b></font></caption>";
-	echo "<tr><th>ROOM</th><th>HOTEL</th><th colspan=2>INR</th><th colspan=2>USD</th><th>TOTAL</th></tr>";
-	echo "<tr><th>TYPE</th><th>NAME</th><th>SINGLE</th><th>DOUBLE</th><th>SINGLE</th><th>DOUBLE</th><th>ROOM</th></tr>";
+	echo "<tr><th>ROOM</th><th>HOTEL</th><th colspan=2>INR</th><th colspan=2>USD</th><th>TOTAL</th><th>AVAILABLE</th></tr>";
+	echo "<tr><th>TYPE</th><th>NAME</th><th>SINGLE</th><th>DOUBLE</th><th>SINGLE</th><th>DOUBLE</th><th>ROOMs</th><th>ROOMs</th></tr>";
 
 	while($v=mysqli_fetch_array($rs))
 	{
@@ -48,6 +61,7 @@
 		echo "<td>".$v[3]."</td>";
 		echo "<td>".$v[4]."</td>";
 		echo "<td>".$v[5]."</td>";
+        echo "<td>".$v[7]."</td>";
 		echo "</tr>";
 	}
 	echo "</table>";

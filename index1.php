@@ -16,11 +16,26 @@
 	        <li><a href=home.php>Home</a></li>
 	        <li><a href=accommodation.php>Accomodation</a></li>
 					<li><a href=tariff.php>Tariff and Policies</a></li>
+                    <?php
+                    if (isset($_SESSION['isUser']))
+                        echo "<li><a href='Reservation.php'>Reservation</a></b>"; 
+                    ?>
 					<li><a href=aboutus.php>About Us</a></li>
 	      </ul>
 				<ul class="nav navbar-nav navbar-right">
-        <li><a href="login.php">Login</a></li>
-      </ul>
+            <?php
+                    if (isset($_SESSION['isUser']))
+                    {
+                        echo "<li><a href='logout.php'>Hello ".$_SESSION['username']."</a></b>";
+                        echo "<li><a href='bookings.php'>Your Bookings</a></b>";
+                    }
+                    else
+                    {
+                        echo '<li><a href="Login.php">Login</a></b>';
+                        //echo '<b><a href="login.php">SignIn</a></b>';
+                    }
+            ?>
+            </ul>
 	    </div>
 	  </div>
 	</nav>

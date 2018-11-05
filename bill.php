@@ -52,6 +52,9 @@
 
 
     <h1>Your bill amount is <?php echo $_SESSION['price']?> x <?php echo $_SESSION['norm'] ?> x <?php echo $_SESSION['datediff'] ?> = <?php echo $_SESSION['price']*$_SESSION['norm']*$_SESSION['datediff'] ?></h1>
+      <div class="container" style="text-align:center;margin-bottom:15px;">
+        <a href="home.php" class="btn btn-success" >Return Home</a>
+      </div>
   <div>
   <script src="js/bootstrap.min.js"></script>
 

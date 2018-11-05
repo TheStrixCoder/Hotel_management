@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -32,6 +35,18 @@ function RePasswordValidataion(sPassword,sRePassword)
 
 <?php
 include "index7.php";
+    
+?>
+<?php
+ 
+    if (!isset($_SESSION['token']))
+    {
+        $token = md5(uniqid(rand(), TRUE));
+        $_SESSION['token'] = $token;
+        $_SESSION['token_time'] = time();
+    }
+    
+ 
 ?>
 </head>
 <body>
@@ -40,7 +55,7 @@ include "index7.php";
 <TR></tr>
 <form action="userdetailinsert.php" method="post" name="userinfo"><TR></tr>
 <br />
-
+<input type="hidden" name="token" value="<?php echo $token; ?>" />
 <table  class = "table" align="center" width="380" border="3" cellspacing="1" cellpadding="1">
 <tr>
 	<td><span class="style1"><strong>Enter user name:</strong></span> </td>

@@ -28,9 +28,10 @@
 	{
 
 	$con=mysqli_connect("localhost","root","",'hotelmanagement');
-	$qq=mysqli_query($con,"select * from reservation");
+	//$qq=mysqli_query($con,"select * from reservation");
+    $qq=mysqli_query($con,"select max(cast(r_id as int)) from room");
 	$row1=mysqli_fetch_array($qq);
-	$id1=mysqli_num_rows($qq)+1;
+	$id1=$row1[0]+1;
 
 
  $b_rooms=0;
